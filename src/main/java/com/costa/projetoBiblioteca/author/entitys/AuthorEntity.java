@@ -1,30 +1,26 @@
-package com.costa.projetoBiblioteca.user;
+package com.costa.projetoBiblioteca.author.entitys;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "author")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class AuthorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
-    @Nullable
-    private String nome;
+    private String name;
 
-    @Column(nullable = false, unique = true)
-    @Nullable
-    private String email;
-
+    @Column(nullable = false, name = "data_nascimento")
+    private String dataNascimenteo;
 }

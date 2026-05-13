@@ -2,3 +2,13 @@ spring:
   application:
     name: projetoBiblioteca
 
+
+  datasource:
+    url: ${DATABASE_LH}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
