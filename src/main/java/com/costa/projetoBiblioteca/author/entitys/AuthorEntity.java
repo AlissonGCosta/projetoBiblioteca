@@ -1,8 +1,11 @@
 package com.costa.projetoBiblioteca.author.entitys;
 
+import com.costa.projetoBiblioteca.books.entitys.BookEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,4 +26,9 @@ public class AuthorEntity {
 
     @Column(nullable = false, name = "data_nascimento")
     private String dataNascimenteo;
+
+    @OneToMany(mappedBy = "author")
+    @Column(name = "livros")
+    private Set<BookEntity> books = new HashSet<>();
+
 }

@@ -1,6 +1,7 @@
 package com.costa.projetoBiblioteca.books.entitys;
 
 
+import com.costa.projetoBiblioteca.author.entitys.AuthorEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,5 +29,7 @@ public class BookEntity {
     @Column
     private boolean available;
 
+    @Column(nullable = false)
+    private String sinopse;
 
 }
