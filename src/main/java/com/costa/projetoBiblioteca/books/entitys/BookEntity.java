@@ -29,7 +29,11 @@ public class BookEntity {
     @Column
     private boolean available;
 
-    @Column(nullable = false)
-    private String sinopse;
+    @Column(nullable = false, length = 10000)
+    private String prefacio;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private AuthorEntity authorEntity;
 
 }

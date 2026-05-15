@@ -25,10 +25,9 @@ public class AuthorEntity {
     private String name;
 
     @Column(nullable = false, name = "data_nascimento")
-    private String dataNascimenteo;
+    private String dataNascimento;
 
     @OneToMany(mappedBy = "author")
-    @Column(name = "livros")
     private Set<BookEntity> books = new HashSet<>();
 
 }

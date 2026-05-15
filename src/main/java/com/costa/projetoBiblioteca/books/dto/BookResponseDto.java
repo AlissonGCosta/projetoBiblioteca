@@ -8,7 +8,7 @@ public record BookResponseDto(
          UUID id,
          String title,
          String author,
-         String sinopse,
+         String prefacio,
          boolean available
 ) {
 

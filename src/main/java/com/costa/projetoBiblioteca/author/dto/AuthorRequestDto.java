@@ -1,9 +1,9 @@
-package com.costa.projetoBiblioteca.books.dto;
+package com.costa.projetoBiblioteca.author.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
+
 
 @Getter
 @Setter
@@ -11,15 +11,12 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @AllArgsConstructor
 @Validated
-public class BookRequestDto {
+
+public class AuthorRequestDto {
 
     @NotBlank
-    private String title;
+    private String name;
 
     @NotBlank
-    private String author;
-
-    @NotBlank
-    private String prefacio;
-
+    private String dataNascimento;
 }

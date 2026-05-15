@@ -39,7 +39,8 @@ public class BooksService {
         //criando o metodo para adcionar no create a um autor ja criado
         BookEntity bookEntity = BookEntity.builder()
                 .title(dto.getTitle())
-                .sinopse(dto.getSinopse())
+                .author(nomeAuthor)
+                .prefacio(dto.getPrefacio())
                 .available(ativo)
                 .build();
 
@@ -50,17 +51,13 @@ public class BooksService {
                 .orElse(null);
 
         if (authorEntity != null) {
+            bookEntity.setAuthor(authorEntity.getName());
             authorEntity.getBooks().add(bookEntity);
         }
 
 
         // Salvando o livro na database
-        booksRepository.save(BookEntity.builder()
-                .title(dto.getTitle())
-                .author(dto.getAuthor())
-                .sinopse(dto.getSinopse())
-                .available(ativo)
-                .build());
+        booksRepository.save(bookEntity);
     }
 
     public List<BookResponseDto> findAllBooks() {
@@ -71,7 +68,7 @@ public class BooksService {
                         book.getId(),
                         book.getTitle(),
                         book.getAuthor(),
-                        book.getSinopse(),
+                        book.getPrefacio(),
                         book.isAvailable()
                 )).toList();
     }
@@ -85,8 +82,13 @@ public class BooksService {
                 book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
-                book.getSinopse(),
+                book.getPrefacio(),
                 book.isAvailable()
         );
+    }
+
+    public void deleteBookbyTitle(String title) {
+        booksRepository.findByTitle(title)
+                .ifPresent(book -> booksRepository.delete(book));
     }
 }
