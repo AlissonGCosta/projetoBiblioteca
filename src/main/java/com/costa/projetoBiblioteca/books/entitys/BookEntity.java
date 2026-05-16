@@ -2,6 +2,7 @@ package com.costa.projetoBiblioteca.books.entitys;
 
 
 import com.costa.projetoBiblioteca.author.entitys.AuthorEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,8 +24,6 @@ public class BookEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private String author;
 
     @Column
     private boolean available;
@@ -34,6 +33,7 @@ public class BookEntity {
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
+    @JsonBackReference
     private AuthorEntity authorEntity;
 
 }

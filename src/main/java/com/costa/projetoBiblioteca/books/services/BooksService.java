@@ -28,33 +28,19 @@ public class BooksService {
             throw new RuntimeException("Livro ja cadastrado");
         }
 
-
         String nomeAuthor = dto.getAuthor().trim();
 
         //checagem se um autho desse livro ja esta criado
-        if(!authorRepository.findByName(nomeAuthor).isPresent()) {
-            throw new RuntimeException("Crie um Autor antes de cadastrar o livro");
-        }
+        AuthorEntity author = authorRepository.findByName(nomeAuthor)
+                .orElseThrow(() -> new RuntimeException("Crie um Autor antes de cadastrar um livro"));
 
         //criando o metodo para adcionar no create a um autor ja criado
         BookEntity bookEntity = BookEntity.builder()
                 .title(dto.getTitle())
-                .author(nomeAuthor)
                 .prefacio(dto.getPrefacio())
                 .available(ativo)
+                .authorEntity(author)
                 .build();
-
-        AuthorEntity authorEntity = authorRepository.findAll()
-                .stream()
-                .filter(a -> a.getName() != null && a.getName().equalsIgnoreCase(nomeAuthor))
-                .findFirst()
-                .orElse(null);
-
-        if (authorEntity != null) {
-            bookEntity.setAuthor(authorEntity.getName());
-            authorEntity.getBooks().add(bookEntity);
-        }
-
 
         // Salvando o livro na database
         booksRepository.save(bookEntity);
@@ -67,7 +53,7 @@ public class BooksService {
                 .map(book -> new BookResponseDto(
                         book.getId(),
                         book.getTitle(),
-                        book.getAuthor(),
+                        book.getAuthorEntity().getName(),
                         book.getPrefacio(),
                         book.isAvailable()
                 )).toList();
@@ -81,7 +67,7 @@ public class BooksService {
         return new BookResponseDto(
                 book.getId(),
                 book.getTitle(),
-                book.getAuthor(),
+                book.getAuthorEntity().getName(),
                 book.getPrefacio(),
                 book.isAvailable()
         );

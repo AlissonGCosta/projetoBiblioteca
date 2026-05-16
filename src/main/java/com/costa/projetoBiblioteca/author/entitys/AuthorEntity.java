@@ -1,6 +1,7 @@
 package com.costa.projetoBiblioteca.author.entitys;
 
 import com.costa.projetoBiblioteca.books.entitys.BookEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +28,8 @@ public class AuthorEntity {
     @Column(nullable = false, name = "data_nascimento")
     private String dataNascimento;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "authorEntity")
+    @JsonManagedReference
     private Set<BookEntity> books = new HashSet<>();
 
 }
