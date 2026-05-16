@@ -75,6 +75,6 @@ public class BooksService {
 
     public void deleteBookbyTitle(String title) {
         booksRepository.findByTitle(title)
-                .ifPresent(book -> booksRepository.delete(book));
+                .ifPresent(booksRepository::delete);
     }
 }
