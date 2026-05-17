@@ -7,6 +7,9 @@ import com.costa.projetoBiblioteca.books.dto.BookRequestDto;
 import com.costa.projetoBiblioteca.books.dto.BookResponseDto;
 import com.costa.projetoBiblioteca.books.entitys.BookEntity;
 import com.costa.projetoBiblioteca.books.entitys.BooksRepository;
+import com.costa.projetoBiblioteca.exception.BadRequestExcetpiton;
+import com.costa.projetoBiblioteca.exception.ConflictEcxecption;
+import com.costa.projetoBiblioteca.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +29,24 @@ public class BooksService {
 
         //checagem se o livro ja existe
         if (booksRepository.findByTitle(dto.getTitle()).isPresent()) {
-            throw new RuntimeException("Livro ja cadastrado");
+            throw new ConflictEcxecption("Livro ja cadastrado");
         }
 
+        //validação do titulo
+        if(dto.getTitle() == null || dto.getTitle().trim().isEmpty()) {
+            throw  new BadRequestExcetpiton("O titulo é obrigatorio");
+        }
+
+        //validação do autor
         String nomeAuthor = dto.getAuthor().trim();
+
+        if(nomeAuthor.isEmpty() || nomeAuthor == null) {
+            throw new BadRequestExcetpiton("O Autor é obrigatorio");
+        }
 
         //checagem se um author desse livro já existe em banco
         AuthorEntity author = authorRepository.findByName(nomeAuthor)
-                .orElseThrow(() -> new RuntimeException("Crie um Autor antes de cadastrar um livro"));
+                .orElseThrow(() -> new ResourceNotFoundException("Crie um Autor antes de cadastrar um livro"));
 
         //criando o metodo para adcionar no create a um autor ja criado
         BookEntity bookEntity = BookEntity.builder()
@@ -67,7 +80,7 @@ public class BooksService {
     public BookResponseDto findBookbyTitle(String title) {
 
         BookEntity book = booksRepository.findByTitle(title)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Livro não encontrado"));
 
         return new BookResponseDto(
                 book.getId(),
@@ -83,7 +96,7 @@ public class BooksService {
     public BookResponseDto findBookbyId(UUID id) {
 
         BookEntity book = booksRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("livro não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("livro não encontrado"));
 
 
         return new BookResponseDto(
@@ -101,11 +114,11 @@ public class BooksService {
 
 
       BookEntity book =  booksRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Livro não cadastrado"));
+        .orElseThrow(() -> new ResourceNotFoundException("Livro não cadastrado"));
 
 
         AuthorEntity author = authorRepository.findByName(dto.getAuthor())
-                .orElseThrow(() -> new RuntimeException("Autor não cadastrado, cadastreo para adcionar o livro a ele"));
+                .orElseThrow(() -> new ResourceNotFoundException("Autor não cadastrado, cadastreo para adcionar o livro a ele"));
 
                 book.setTitle(dto.getTitle());
                 book.setAuthorEntity(author);

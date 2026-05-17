@@ -4,8 +4,9 @@ import com.costa.projetoBiblioteca.author.dto.AuthorRequestDto;
 import com.costa.projetoBiblioteca.author.dto.AuthorResponseDto;
 import com.costa.projetoBiblioteca.author.entitys.AuthorEntity;
 import com.costa.projetoBiblioteca.author.entitys.AuthorRepository;
-import com.costa.projetoBiblioteca.books.dto.BookResponseDto;
-import com.costa.projetoBiblioteca.books.entitys.BookEntity;
+import com.costa.projetoBiblioteca.exception.BadRequestExcetpiton;
+import com.costa.projetoBiblioteca.exception.ConflictEcxecption;
+import com.costa.projetoBiblioteca.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +23,20 @@ public class AuthorServices {
     //criando o autor
     public void createAuthor( AuthorRequestDto dto){
 
+        //validação tanto do nome quanto a data de nascimento do author
+
+        if(dto.getName() == null || dto.getName().isEmpty()){
+            throw new BadRequestExcetpiton("O nome é obrigatorio");
+        }
+
+        if(dto.getDataNascimento() == null || dto.getDataNascimento().isEmpty()){
+            throw new BadRequestExcetpiton("A data de nascimento é obrigatoria");
+        }
+
+
+        //verificando se ja tem um autor com esse nome
         if(authorRepository.findByName(dto.getName()).isPresent()){
-           throw new RuntimeException("Esse Autor ja foi cadastrado");
+           throw new ConflictEcxecption("Esse Autor ja foi cadastrado");
         }
 
          authorRepository.save(
@@ -55,7 +68,7 @@ public class AuthorServices {
     public void deleteAuthor(UUID id){
 
         if(!authorRepository.findById(id).isPresent()){
-            throw new RuntimeException("Autor n existente");
+            throw new ResourceNotFoundException("Autor n existente");
         }
 
         authorRepository.deleteById(id);
@@ -65,7 +78,7 @@ public class AuthorServices {
     public AuthorResponseDto findAuthorById(UUID id){
 
         AuthorEntity a = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Autor n encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Autor n encontrado"));
 
         return new AuthorResponseDto(
                 a.getId(),
@@ -79,7 +92,8 @@ public class AuthorServices {
 
     public void alterarAuthorById(UUID id, AuthorRequestDto dto){
 
-       AuthorEntity novoAuthor  =   authorRepository.findById(id).orElseThrow(() -> new RuntimeException("Autor não cadastrado"));
+       AuthorEntity novoAuthor  =   authorRepository.findById(id).orElseThrow(
+               () -> new ResourceNotFoundException("Autor não cadastrado"));
 
 
         novoAuthor.setName(dto.getName());
