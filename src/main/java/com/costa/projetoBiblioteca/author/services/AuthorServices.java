@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,6 +34,7 @@ public class AuthorServices {
         );
     }
 
+    // listando todos os autores
     public List<AuthorResponseDto> listarAutores(){
 
 
@@ -49,6 +51,7 @@ public class AuthorServices {
                 .toList();
     }
 
+    //delete simples para admin ou para testes
     public void deleteAuthor(UUID id){
 
         if(!authorRepository.findById(id).isPresent()){
@@ -58,4 +61,30 @@ public class AuthorServices {
         authorRepository.deleteById(id);
     }
 
+    //lista usuarios por id
+    public AuthorResponseDto findAuthorById(UUID id){
+
+        AuthorEntity a = authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Autor n encontrado"));
+
+        return new AuthorResponseDto(
+                a.getId(),
+                a.getName(),
+                a.getDataNascimento(),
+                a.getBooks()
+        );
+    }
+
+    //Altera Todos ou em partes os atributos do author
+
+    public void alterarAuthorById(UUID id, AuthorRequestDto dto){
+
+       AuthorEntity novoAuthor  =   authorRepository.findById(id).orElseThrow(() -> new RuntimeException("Autor não cadastrado"));
+
+
+        novoAuthor.setName(dto.getName());
+        novoAuthor.setDataNascimento(dto.getDataNascimento());
+
+        authorRepository.save(novoAuthor);
+    }
 }

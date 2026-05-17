@@ -31,10 +31,23 @@ public class AuthorController {
         return authorServices.listarAutores();
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthorResponseDto buscarAutorPorId(@PathVariable UUID id){
+        return authorServices.findAuthorById(id);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletarAutor(@PathVariable UUID id){
         authorServices.deleteAuthor(id);
     }
+
+    @PutMapping("/{id}/autores")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void atualizarAuthor(@PathVariable UUID id, @RequestBody @Valid AuthorRequestDto dto){
+        authorServices.alterarAuthorById(id, dto);
+    }
+
 
 }

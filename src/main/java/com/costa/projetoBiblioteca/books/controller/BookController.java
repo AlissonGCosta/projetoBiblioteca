@@ -49,9 +49,9 @@ public class BookController {
         booksService.putBook(dto, id);
     }
 
-    @DeleteMapping("/{title}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable String title) {
-        booksService.deleteBookbyTitle(title);
+    public void deleteBook(@PathVariable UUID id) {
+        booksService.deleteBookbyId(id);
     }
 }

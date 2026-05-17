@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -31,4 +32,15 @@ public class UserController {
 
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponseDto showUserById(@PathVariable UUID id) {
+        return userService.listarUsuariosById(id);
+    }
+
+    @DeleteMapping("/{id}/users")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserById(@PathVariable UUID id) {
+        userService.deleteUser(id);
+    }
 }

@@ -31,7 +31,7 @@ public class BooksService {
 
         String nomeAuthor = dto.getAuthor().trim();
 
-        //checagem se um autho desse livro ja esta criado
+        //checagem se um author desse livro já existe em banco
         AuthorEntity author = authorRepository.findByName(nomeAuthor)
                 .orElseThrow(() -> new RuntimeException("Crie um Autor antes de cadastrar um livro"));
 
@@ -96,19 +96,17 @@ public class BooksService {
     }
 
 
-    // alera o produto por completo ou grande parte dos atributos
+    // altera o produto por completo ou grande parte dos atributos
     public void putBook(BookRequestDto dto, UUID id) {
 
 
-        if(!booksRepository.findById(id).isPresent()) {
-            throw new RuntimeException("Livro não cadastrado");
-        }
+      BookEntity book =  booksRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Livro não cadastrado"));
+
 
         AuthorEntity author = authorRepository.findByName(dto.getAuthor())
                 .orElseThrow(() -> new RuntimeException("Autor não cadastrado, cadastreo para adcionar o livro a ele"));
 
-
-                BookEntity book = new BookEntity();
                 book.setTitle(dto.getTitle());
                 book.setAuthorEntity(author);
                 book.setPrefacio(dto.getPrefacio());
@@ -118,8 +116,8 @@ public class BooksService {
     }
 
     // um delete simples
-    public void deleteBookbyTitle(String title) {
-        booksRepository.findByTitle(title)
+    public void deleteBookbyId(UUID uuid) {
+        booksRepository.findById(uuid)
                 .ifPresent(booksRepository::delete);
     }
 }
