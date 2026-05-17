@@ -24,8 +24,16 @@ public class UserEntity {
     @Nullable
     private String nome;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true )
     @Nullable
     private String email;
+
+    @Column(nullable = false)
+    @Nullable
+    private String senha;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
 }

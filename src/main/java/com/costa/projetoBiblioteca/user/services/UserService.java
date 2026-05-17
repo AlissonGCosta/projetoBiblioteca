@@ -1,11 +1,18 @@
 package com.costa.projetoBiblioteca.user.services;
 
+
+import com.costa.projetoBiblioteca.exception.ConflictEcxecption;
+import com.costa.projetoBiblioteca.exception.ResourceNotFoundException;
 import com.costa.projetoBiblioteca.user.dto.UserEntityRequestDto;
 import com.costa.projetoBiblioteca.user.dto.UserResponseDto;
+import com.costa.projetoBiblioteca.user.entiys.Role;
 import com.costa.projetoBiblioteca.user.entiys.UserEntity;
 import com.costa.projetoBiblioteca.user.entiys.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,19 +22,28 @@ import java.util.UUID;
 public class UserService {
 
     private final UserEntityRepository userEntityRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     //criando os usuarios
     public void createUser(UserEntityRequestDto dto) throws RuntimeException {
 
         if (userEntityRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Usuario ja cadastrado");
+            throw new ConflictEcxecption("Usuario ja cadastrado");
         }
 
-        userEntityRepository.save(UserEntity.builder()
-                .nome(dto.getNome())
-                .email(dto.getEmail())
-                .build());
+            String senhaCriptografada = passwordEncoder.encode(dto.getSenha());
+
+            UserEntity userEntity = UserEntity.builder()
+                    .nome(dto.getNome())
+                    .email(dto.getEmail())
+                    .senha(senhaCriptografada)
+                    .role(Role.ROLE_USER)
+                    .build();
+
+
+            userEntityRepository.save(userEntity);
+
 
     }
 
@@ -46,10 +62,10 @@ public class UserService {
     }
 
     // lista usuario por id
-    public UserResponseDto listarUsuariosById(UUID id) throws RuntimeException {
+    public UserResponseDto listarUsuariosById(UUID id) {
 
         UserEntity user = userEntityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nenhum usuario encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Nenhum usuario encontrado"));
 
         return new UserResponseDto(user.getId(),
                 user.getEmail(),
@@ -57,7 +73,7 @@ public class UserService {
     }
 
     //delete simples para testes e admins
-    public void deleteUser(UUID id) throws RuntimeException {
+    public void deleteUser(UUID id) {
         userEntityRepository.deleteById(id);
     }
 
