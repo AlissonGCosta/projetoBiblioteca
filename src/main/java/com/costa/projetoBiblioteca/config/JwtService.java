@@ -3,12 +3,14 @@ package com.costa.projetoBiblioteca.config;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
     private final String SECRET = "sxyIpQg6ST4AGDsMWQdc4BAZTidXlztz1Qmy4Dq+2WY=";
